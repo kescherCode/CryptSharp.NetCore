@@ -9,3 +9,4 @@ TestResults
 *.suo
 *.csproj.user
 /.vs/*
+.idea
