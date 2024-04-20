@@ -27,8 +27,6 @@ using CryptSharp.Core.Internal;
 namespace CryptSharp.Core.Utility;
 
 // See http://www.tarsnap.com/scrypt/scrypt.pdf for algorithm details.
-// TODO: Feel hatred for whatever genius decided C# wouldn't have 'safe'
-//       stack-allocated arrays. He has stricken ugliness upon a thousand codes.
 /// <summary>
 ///     Implements the SCrypt key derivation function.
 /// </summary>
