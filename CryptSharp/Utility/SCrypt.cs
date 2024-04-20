@@ -27,7 +27,6 @@ using CryptSharp.Core.Internal;
 namespace CryptSharp.Core.Utility;
 
 // See http://www.tarsnap.com/scrypt/scrypt.pdf for algorithm details.
-// TODO: Test on a big-endian machine. Do any exist with .NET implementations?
 // TODO: Feel hatred for whatever genius decided C# wouldn't have 'safe'
 //       stack-allocated arrays. He has stricken ugliness upon a thousand codes.
 /// <summary>
