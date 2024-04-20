@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,33 +16,32 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
-namespace CryptSharp.Core
+namespace CryptSharp.Core;
+
+/// <summary>
+///     Properties inherent to particular crypt algorithms.
+/// </summary>
+public class CrypterProperty
 {
     /// <summary>
-    /// Properties inherent to particular crypt algorithms. 
+    ///     The maximum password length. Bytes beyond this length will have no effect.
     /// </summary>
-    public class CrypterProperty
+    public static readonly CrypterOptionKey MaxPasswordLength = new("MaxPasswordLength", typeof(int));
+
+    /// <summary>
+    ///     The minimum number for <see cref="CrypterOption.Rounds" />.
+    /// </summary>
+    public static readonly CrypterOptionKey MinRounds = new("MinRounds", typeof(int));
+
+    /// <summary>
+    ///     The maximum number for <see cref="CrypterOption.Rounds" />.
+    /// </summary>
+    public static readonly CrypterOptionKey MaxRounds = new("MaxRounds", typeof(int));
+
+    protected CrypterProperty()
     {
-        /// <summary>
-        /// The maximum password length. Bytes beyond this length will have no effect.
-        /// </summary>
-        public static readonly CrypterOptionKey MaxPasswordLength = new("MaxPasswordLength", typeof(int));
-
-        /// <summary>
-        /// The minimum number for <see cref="CrypterOption.Rounds"/>.
-        /// </summary>
-        public static readonly CrypterOptionKey MinRounds = new("MinRounds", typeof(int));
-
-        /// <summary>
-        /// The maximum number for <see cref="CrypterOption.Rounds"/>.
-        /// </summary>
-        public static readonly CrypterOptionKey MaxRounds = new("MaxRounds", typeof(int));
-
-        protected CrypterProperty()
-        {
-
-        }
     }
 }

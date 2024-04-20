@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,28 +16,28 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 
-namespace CryptSharp.Core.Internal
+namespace CryptSharp.Core.Internal;
+
+internal static class ByteArray
 {
-    internal static class ByteArray
+    public static int NullTerminatedLength(byte[] buffer, int maxLength)
     {
-        public static int NullTerminatedLength(byte[] buffer, int maxLength)
-        {
-            if (maxLength > buffer.Length) { maxLength = buffer.Length; }
+        if (maxLength > buffer.Length) { maxLength = buffer.Length; }
 
-            int length;
-            for (length = 0; length < maxLength && buffer[length] != 0; length++) ;
-            return length;
-        }
+        int length;
+        for (length = 0; length < maxLength && buffer[length] != 0; length++) ;
+        return length;
+    }
 
-        public static byte[] TruncateAndCopy(byte[] buffer, int maxLength)
-        {
-            byte[] truncatedBuffer = new byte[Math.Min(buffer.Length, maxLength)];
-            Array.Copy(buffer, truncatedBuffer, truncatedBuffer.Length);
-            return truncatedBuffer;
-        }
+    public static byte[] TruncateAndCopy(byte[] buffer, int maxLength)
+    {
+        var truncatedBuffer = new byte[Math.Min(buffer.Length, maxLength)];
+        Array.Copy(buffer, truncatedBuffer, truncatedBuffer.Length);
+        return truncatedBuffer;
     }
 }

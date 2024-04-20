@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,129 +16,124 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System.Text.RegularExpressions;
 using CryptSharp.Core.Internal;
 using CryptSharp.Core.Utility;
 
-namespace CryptSharp.Core
+namespace CryptSharp.Core;
+
+/// <summary>
+///     Extended DES crypt.
+/// </summary>
+public class ExtendedDesCrypter : Crypter
 {
-    /// <summary>
-    /// Extended DES crypt.
-    /// </summary>
-    public class ExtendedDesCrypter : Crypter
+    private const int MinRounds = 1;
+    private const int MaxRounds = (1 << 24) - 1;
+    private static readonly Regex _regex = new(Regex, RegexOptions.CultureInvariant);
+
+    private static readonly CrypterOptions _properties = new CrypterOptions
     {
-        private const int MinRounds = 1;
-        private const int MaxRounds = (1 << 24) - 1;
-        private static readonly Regex _regex = new(Regex, RegexOptions.CultureInvariant);
-        private static readonly CrypterOptions _properties = new CrypterOptions()
+        { CrypterProperty.MinRounds, MinRounds }, { CrypterProperty.MaxRounds, MaxRounds }
+    }.MakeReadOnly();
+
+    /// <inheritdoc />
+    public override CrypterOptions Properties => _properties;
+
+    private static string Regex =>
+        @"\A_(?<rounds>[A-Za-z0-9./]{4})(?<salt>[A-Za-z0-9./]{4})(?<hash>[A-Za-z0-9./]{11})?\z";
+
+    /// <inheritdoc />
+    public override string GenerateSalt(CrypterOptions? options)
+    {
+        Check.Null("options", options);
+
+        var rounds = options!.GetValue<int?>(CrypterOption.Rounds);
+        if (rounds is { })
         {
-            { CrypterProperty.MinRounds, MinRounds },
-            { CrypterProperty.MaxRounds, MaxRounds }
-        }.MakeReadOnly();
-
-        /// <inheritdoc />
-        public override string GenerateSalt(CrypterOptions? options)
-        {
-            Check.Null("options", options);
-
-            int? rounds = options!.GetValue<int?>(CrypterOption.Rounds);
-            if (rounds is not null)
-            {
-                Check.Range("CrypterOption.Rounds", (int)rounds, MinRounds, MaxRounds);
-            }
-
-            byte[] roundsBytes = new byte[3];
-            byte[]? saltBytes = null;
-            try
-            {
-                BitPacking.LEBytesFromUInt24((uint)(rounds ?? 4321), roundsBytes, 0);
-                saltBytes = Security.GenerateRandomBytes(3);
-
-                return "_"
-                    + Base64Encoding.UnixMD5.GetString(roundsBytes)
-                    + Base64Encoding.UnixMD5.GetString(saltBytes);
-            }
-            finally
-            {
-                Security.Clear(roundsBytes);
-                Security.Clear(saltBytes);
-            }
+            Check.Range("CrypterOption.Rounds", (int)rounds, MinRounds, MaxRounds);
         }
 
-        /// <inheritdoc />
-        public override bool CanCrypt(string salt)
+        var roundsBytes = new byte[3];
+        byte[]? saltBytes = null;
+        try
         {
-            Check.Null("salt", salt);
+            BitPacking.LEBytesFromUInt24((uint)(rounds ?? 4321), roundsBytes, 0);
+            saltBytes = Security.GenerateRandomBytes(3);
 
-            return _regex.IsMatch(salt);
+            return "_"
+                   + Base64Encoding.UnixMD5.GetString(roundsBytes)
+                   + Base64Encoding.UnixMD5.GetString(saltBytes);
         }
-
-        /// <inheritdoc />
-        public override string Crypt(byte[] password, string salt)
+        finally
         {
-            Check.Null("password", password);
-            Check.Null("salt", salt);
+            Security.Clear(roundsBytes);
+            Security.Clear(saltBytes);
+        }
+    }
 
-            Match match = _regex.Match(salt);
-            if (!match.Success) { throw Exceptions.Argument("salt", "Invalid salt."); }
+    /// <inheritdoc />
+    public override bool CanCrypt(string salt)
+    {
+        Check.Null("salt", salt);
 
-            byte[]? roundsBytes = null, saltBytes = null, crypt = null, input = null;
-            try
+        return _regex.IsMatch(salt);
+    }
+
+    /// <inheritdoc />
+    public override string Crypt(byte[] password, string salt)
+    {
+        Check.Null("password", password);
+        Check.Null("salt", salt);
+
+        var match = _regex.Match(salt);
+        if (!match.Success) { throw Exceptions.Argument("salt", "Invalid salt."); }
+
+        byte[]? roundsBytes = null, saltBytes = null, crypt = null, input = null;
+        try
+        {
+            var roundsString = match.Groups["rounds"].Value;
+            roundsBytes = Base64Encoding.UnixMD5.GetBytes(roundsString);
+            var roundsValue = (int)BitPacking.UInt24FromLEBytes(roundsBytes, 0);
+
+            var saltString = match.Groups["salt"].Value;
+            saltBytes = Base64Encoding.UnixMD5.GetBytes(saltString);
+            var saltValue = (int)BitPacking.UInt24FromLEBytes(saltBytes, 0);
+
+            input = new byte[8];
+            var length = ByteArray.NullTerminatedLength(password, password.Length);
+
+            for (var m = 0; m < length; m += 8)
             {
-                string roundsString = match.Groups["rounds"].Value;
-                roundsBytes = Base64Encoding.UnixMD5.GetBytes(roundsString);
-                int roundsValue = (int)BitPacking.UInt24FromLEBytes(roundsBytes, 0);
-
-                string saltString = match.Groups["salt"].Value;
-                saltBytes = Base64Encoding.UnixMD5.GetBytes(saltString);
-                int saltValue = (int)BitPacking.UInt24FromLEBytes(saltBytes, 0);
-
-                input = new byte[8];
-                int length = ByteArray.NullTerminatedLength(password, password.Length);
-
-                for (int m = 0; m < length; m += 8)
+                if (m != 0)
                 {
-                    if (m != 0)
-                    {
-                        using DesCipher cipher = DesCipher.Create(input);
-                        cipher.Encipher(input, 0, input, 0);
-                    }
-
-                    for (int n = 0; n < 8 && n < length - m; n++)
-                    {
-                        // DES Crypt ignores the high bit of every byte.
-                        input[n] ^= (byte)(password[m + n] << 1);
-                    }
+                    using var cipher = DesCipher.Create(input);
+                    cipher.Encipher(input, 0, input, 0);
                 }
 
-                using (DesCipher cipher = DesCipher.Create(input))
+                for (var n = 0; n < 8 && n < length - m; n++)
                 {
-                    crypt = new byte[8];
-                    cipher.Crypt(crypt, 0, roundsValue, saltValue);
+                    // DES Crypt ignores the high bit of every byte.
+                    input[n] ^= (byte)(password[m + n] << 1);
                 }
-
-                return "_" + roundsString + saltString + Base64Encoding.UnixCrypt.GetString(crypt);
             }
-            finally
+
+            using (var cipher = DesCipher.Create(input))
             {
-                Security.Clear(roundsBytes);
-                Security.Clear(saltBytes);
-                Security.Clear(crypt);
-                Security.Clear(input);
+                crypt = new byte[8];
+                cipher.Crypt(crypt, 0, roundsValue, saltValue);
             }
-        }
 
-        /// <inheritdoc />
-        public override CrypterOptions Properties
-        {
-            get { return _properties; }
+            return "_" + roundsString + saltString + Base64Encoding.UnixCrypt.GetString(crypt);
         }
-
-        private static string Regex
+        finally
         {
-            get { return @"\A_(?<rounds>[A-Za-z0-9./]{4})(?<salt>[A-Za-z0-9./]{4})(?<hash>[A-Za-z0-9./]{11})?\z"; }
+            Security.Clear(roundsBytes);
+            Security.Clear(saltBytes);
+            Security.Clear(crypt);
+            Security.Clear(input);
         }
     }
 }

@@ -1,4 +1,5 @@
 #region License
+
 /*
 CryptSharp
 Copyright (c) 2010, 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,26 +16,28 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 using System.Security.Cryptography;
 
-namespace CryptSharp.Core.Internal
+namespace CryptSharp.Core.Internal;
+
+internal static class Security
 {
-    internal static class Security
+    public static void Clear(Array? array)
     {
-        public static void Clear(Array? array)
-        {
-            if (array is not null) { Array.Clear(array, 0, array.Length); }
-        }
+        if (array is { }) { Array.Clear(array, 0, array.Length); }
+    }
 
-        public static byte[] GenerateRandomBytes(int count)
-        {
-			Check.Range("count", count, 0, int.MaxValue);
+    public static byte[] GenerateRandomBytes(int count)
+    {
+        Check.Range("count", count, 0, int.MaxValue);
 
-            RandomNumberGenerator rng = RandomNumberGenerator.Create();
-			byte[] bytes = new byte[count]; rng.GetBytes(bytes); return bytes;
-        }
+        var rng = RandomNumberGenerator.Create();
+        var bytes = new byte[count];
+        rng.GetBytes(bytes);
+        return bytes;
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,36 +16,34 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 
-namespace CryptSharp.Core.Utility
+namespace CryptSharp.Core.Utility;
+
+/// <summary>
+///     Modifiers for Expensive Key Schedule (EKS) Blowfish key expansion behavior.
+/// </summary>
+[Flags]
+public enum EksBlowfishKeyExpansionFlags
 {
     /// <summary>
-    /// Modifiers for Expensive Key Schedule (EKS) Blowfish key expansion behavior.
+    ///     Default behavior.
     /// </summary>
-    [Flags]
-    public enum EksBlowfishKeyExpansionFlags
-    {
-        /// <summary>
-        /// Default behavior.
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// The EksBlowfish code in CryptSharp was implemented as per the specification
-        /// at http://static.usenix.org/event/usenix99/provos/provos_html/node4.html.
-        /// 
-        /// Many other BCrypt implementations, however, are ports originating
-        /// originating with the crypt_blowfish C implementation. Pre-2011, crypt_blowfish
-        /// had a sign extension bug that caused up to three characters previous to any
-        /// 8-bit character to match 0xFF.
-        /// 
-        /// CryptSharp never had this bug. However, for those who need backwards
-        /// compatibility for old password databases created with one of these libraries,
-        /// I have added *support* for the bug. You can enable it with this flag.
-        /// </summary>
-        EmulateCryptBlowfishSignExtensionBug = 1
-    }
+    /// <summary>
+    ///     The EksBlowfish code in CryptSharp was implemented as per the specification
+    ///     at http://static.usenix.org/event/usenix99/provos/provos_html/node4.html.
+    ///     Many other BCrypt implementations, however, are ports originating
+    ///     originating with the crypt_blowfish C implementation. Pre-2011, crypt_blowfish
+    ///     had a sign extension bug that caused up to three characters previous to any
+    ///     8-bit character to match 0xFF.
+    ///     CryptSharp never had this bug. However, for those who need backwards
+    ///     compatibility for old password databases created with one of these libraries,
+    ///     I have added *support* for the bug. You can enable it with this flag.
+    /// </summary>
+    EmulateCryptBlowfishSignExtensionBug = 1
 }

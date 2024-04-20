@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,30 +16,29 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 
-namespace CryptSharp.Core
+namespace CryptSharp.Core;
+
+/// <summary>
+///     Options that modify the crypt operation.
+/// </summary>
+public class CrypterOption
 {
     /// <summary>
-    /// Options that modify the crypt operation.
+    ///     The number of rounds to iterate.
     /// </summary>
-    public class CrypterOption
+    public static readonly CrypterOptionKey Rounds = new("Rounds", typeof(int));
+
+    /// <summary>
+    ///     The variant of the crypt algorithm to use.
+    /// </summary>
+    public static readonly CrypterOptionKey Variant = new("Variant", typeof(Enum));
+
+    protected CrypterOption()
     {
-        /// <summary>
-        /// The number of rounds to iterate.
-        /// </summary>
-        public static readonly CrypterOptionKey Rounds = new("Rounds", typeof(int));
-
-        /// <summary>
-        /// The variant of the crypt algorithm to use.
-        /// </summary>
-        public static readonly CrypterOptionKey Variant = new("Variant", typeof(Enum));
-
-        protected CrypterOption()
-        {
-
-        }
     }
 }

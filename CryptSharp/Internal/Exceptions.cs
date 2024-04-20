@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,51 +16,48 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 
-namespace CryptSharp.Core.Internal
+namespace CryptSharp.Core.Internal;
+
+internal static class Exceptions
 {
-    internal static class Exceptions
+    public static ArgumentException Argument
+        (string valueName, string message, params object[] args)
     {
-        public static ArgumentException Argument
-            (string valueName, string message, params object[] args)
-        {
-            message = string.Format(message, args);
-            ArgumentException e = valueName is null
-                ? new ArgumentException(message)
-                : new ArgumentException(message, valueName);
-            return e;
-        }
-
-        public static ArgumentNullException ArgumentNull(string valueName)
-        {
-            ArgumentNullException e = valueName is null
-                ? new ArgumentNullException()
-                : new ArgumentNullException(valueName);
-            return e;
-        }
-
-        public static ArgumentOutOfRangeException ArgumentOutOfRange
-            (string valueName, string message, params object[] args)
-        {
-            message = string.Format(message, args);
-            ArgumentOutOfRangeException e = valueName is null
-                ? new ArgumentOutOfRangeException(message)
-                : new ArgumentOutOfRangeException(valueName, message);
-            return e;
-        }
-
-        public static InvalidOperationException InvalidOperation()
-        {
-            InvalidOperationException e = new();
-            return e;
-        }
-
-        public static NotSupportedException NotSupported()
-        {
-            return new NotSupportedException();
-        }
+        message = string.Format(message, args);
+        var e = valueName is null
+            ? new(message)
+            : new ArgumentException(message, valueName);
+        return e;
     }
+
+    public static ArgumentNullException ArgumentNull(string valueName)
+    {
+        var e = valueName is null
+            ? new()
+            : new ArgumentNullException(valueName);
+        return e;
+    }
+
+    public static ArgumentOutOfRangeException ArgumentOutOfRange
+        (string valueName, string message, params object[] args)
+    {
+        message = string.Format(message, args);
+        var e = valueName is null
+            ? new(message)
+            : new ArgumentOutOfRangeException(valueName, message);
+        return e;
+    }
+
+    public static InvalidOperationException InvalidOperation()
+    {
+        InvalidOperationException e = new();
+        return e;
+    }
+
+    public static NotSupportedException NotSupported() => new();
 }

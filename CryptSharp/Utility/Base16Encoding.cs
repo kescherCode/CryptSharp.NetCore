@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,27 +16,24 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
-namespace CryptSharp.Core.Utility
-{
-    /// <summary>
-    /// Base-16 binary-to-text encodings.
-    /// </summary>
-    public static class Base16Encoding
-    {
-        static Base16Encoding()
-        {
-            Hex = new BaseEncoding("0123456789ABCDEF", true, null, ch => char.ToUpperInvariant(ch));
-        }
+namespace CryptSharp.Core.Utility;
 
-        /// <summary>
-        /// Hexadecimal base-16 uses the numbers 0-9 for 0-9, and the letters A-F for 10-15.
-        /// </summary>
-        public static BaseEncoding Hex
-        {
-            get;
-            private set;
-        }
+/// <summary>
+///     Base-16 binary-to-text encodings.
+/// </summary>
+public static class Base16Encoding
+{
+    static Base16Encoding() => Hex = new("0123456789ABCDEF", true, null, ch => char.ToUpperInvariant(ch));
+
+    /// <summary>
+    ///     Hexadecimal base-16 uses the numbers 0-9 for 0-9, and the letters A-F for 10-15.
+    /// </summary>
+    public static BaseEncoding Hex
+    {
+        get;
+        private set;
     }
 }

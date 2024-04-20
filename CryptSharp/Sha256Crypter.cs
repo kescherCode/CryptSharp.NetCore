@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,51 +16,31 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace CryptSharp.Core
+namespace CryptSharp.Core;
+
+/// <summary>
+///     SHA256 crypt. A reasonable choice if you cannot use Blowfish crypt for policy reasons.
+/// </summary>
+public class Sha256Crypter : ShaCrypter
 {
-    /// <summary>
-    /// SHA256 crypt. A reasonable choice if you cannot use Blowfish crypt for policy reasons.
-    /// </summary>
-    public class Sha256Crypter : ShaCrypter
-    {
-        private static readonly Regex _regex = CreateDefaultRegex("$5$", 43);
+    private static readonly Regex _regex = CreateDefaultRegex("$5$", 43);
 
-        protected override HashAlgorithm CreateHashAlgorithm()
-        {
-            return System.Security.Cryptography.SHA256.Create();
-        }
+    protected override string CryptPrefix => "$5$";
 
-        protected override int[] GetCryptPermutation()
-        {
-            return new[]
-            { 
-                20, 10, 0,
-                11, 1, 21,
-                2, 22, 12,
-                23, 13, 3,
-                14, 4, 24,
-                5, 25, 15,
-                26, 16, 6,
-                17, 7, 27,
-                8, 28, 18,
-                29, 19, 9,
-                30, 31
-            };
-        }
+    protected override HashAlgorithm CreateHashAlgorithm() => SHA256.Create();
 
-        protected override Regex GetRegex()
+    protected override int[] GetCryptPermutation() =>
+        new[]
         {
-            return _regex;
-        }
+            20, 10, 0, 11, 1, 21, 2, 22, 12, 23, 13, 3, 14, 4, 24, 5, 25, 15, 26, 16, 6, 17, 7, 27, 8, 28, 18, 29,
+            19, 9, 30, 31
+        };
 
-        protected override string CryptPrefix
-        {
-            get { return "$5$"; }
-        }
-    }
+    protected override Regex GetRegex() => _regex;
 }

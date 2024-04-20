@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,28 +16,27 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
-namespace CryptSharp.Core
+namespace CryptSharp.Core;
+
+/// <summary>
+///     Options that modify the LDAP crypt operation.
+/// </summary>
+public class LdapCrypterOption : CrypterOption
 {
     /// <summary>
-    /// Options that modify the LDAP crypt operation.
+    ///     The crypter to use with <see cref="LdapCrypterVariant.Crypt" />.
     /// </summary>
-    public class LdapCrypterOption : CrypterOption
+    public static readonly CrypterOptionKey Crypter = new("Crypter", typeof(Crypter));
+
+    /// <summary>
+    ///     The options to pass to the crypter specified by <see cref="LdapCrypterOption.Crypter" />.
+    /// </summary>
+    public static readonly CrypterOptionKey CrypterOptions = new("CrypterOptions", typeof(CrypterOptions));
+
+    protected LdapCrypterOption()
     {
-        /// <summary>
-        /// The crypter to use with <see cref="LdapCrypterVariant.Crypt"/>.
-        /// </summary>
-        public static readonly CrypterOptionKey Crypter = new("Crypter", typeof(Crypter));
-
-        /// <summary>
-        /// The options to pass to the crypter specified by <see cref="LdapCrypterOption.Crypter"/>.
-        /// </summary>
-        public static readonly CrypterOptionKey CrypterOptions = new("CrypterOptions", typeof(CrypterOptions));
-
-        protected LdapCrypterOption()
-        {
-
-        }
     }
 }

@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace CryptSharp.Core;
 
-namespace CryptSharp.Core
+/// <summary>
+///     Modified versions of the PHPass crypt algorithm.
+/// </summary>
+public enum PhpassCrypterVariant
 {
     /// <summary>
-    /// Modified versions of the PHPass crypt algorithm.
+    ///     Standard PHPass. WordPress uses this.
     /// </summary>
-    public enum PhpassCrypterVariant
-    {
-        /// <summary>
-        /// Standard PHPass. WordPress uses this.
-        /// </summary>
-        Standard,
+    Standard,
 
-        /// <summary>
-        /// phpBB changes the prefix but the algorithm is otherwise identical.
-        /// </summary>
-        Phpbb,
+    /// <summary>
+    ///     phpBB changes the prefix but the algorithm is otherwise identical.
+    /// </summary>
+    Phpbb,
 
-        /// <summary>
-        /// Drupal 7+ uses SHA512 instead of MD5.
-        /// </summary>
-        Drupal
-    }
+    /// <summary>
+    ///     Drupal 7+ uses SHA512 instead of MD5.
+    /// </summary>
+    Drupal
 }

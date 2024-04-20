@@ -1,20 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<PackageId>CryptSharp.Core</PackageId>
-		<Version>8.0.0</Version>
-		<Authors>Jeremy Kescher, Costin Banu, Rush Frisby</Authors>
-		<Description>An updated variant of the CryptSharp .NET library. Fork of CryptSharp.Core, incorporates changes from CryptSharp.NET.</Description>
-		<PackageLicenseExpression>ISC</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/kescherCode/CryptSharp.Core</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageProjectUrl>https://github.com/kescherCode/CryptSharp.Core</PackageProjectUrl>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReleaseNotes>Now targets .NET 8, and allows uncompliant salts to be used with SHA-256/512-Crypt.</PackageReleaseNotes>
-	</PropertyGroup>
+    <PropertyGroup>
+        <PackageId>CryptSharp.Core</PackageId>
+        <Version>8.0.0</Version>
+        <Authors>Jeremy Kescher, Costin Banu, Rush Frisby</Authors>
+        <Description>An updated variant of the CryptSharp .NET library. Fork of CryptSharp.Core, incorporates changes from CryptSharp.NET.</Description>
+        <PackageLicenseExpression>ISC</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/kescherCode/CryptSharp.Core</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/kescherCode/CryptSharp.Core</PackageProjectUrl>
+        <!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
+        <!--This is being done using the target below, in order for us to include symbols and source with the NuGet package.-->
+        <PackageReleaseNotes>Now targets .NET 8, and allows uncompliant salts to be used with SHA-256/512-Crypt.</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <Target Name="BuildNuget" AfterTargets="AfterBuild" Condition="'$(Configuration)'=='Release'">
+        <Exec Command="dotnet pack --no-build --include-symbols --include-source"/>
+    </Target>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,46 +16,37 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
-namespace CryptSharp.Core.Internal
+namespace CryptSharp.Core.Internal;
+
+internal static class BitMath
 {
-    internal static class BitMath
+    public static int CountLeadingZeros(int value)
     {
-        public static int CountLeadingZeros(int value)
-        {
-            int count;
-            for (count = 0; count < 32 && 0 == (value & (0x80000000 >> count)); count++) ;
-            return count;
-        }
+        int count;
+        for (count = 0; count < 32 && 0 == (value & (0x80000000 >> count)); count++) ;
+        return count;
+    }
 
-        public static bool IsPositivePowerOf2(int value)
-        {
-            return 0 < value && 0 == (value & (value - 1));
-        }
+    public static bool IsPositivePowerOf2(int value) => 0 < value && 0 == (value & (value - 1));
 
-        public static byte ReverseBits(byte value)
-        {
-            byte reversed = (byte)((((ulong)value * 0x80200802) & 0x884422110) * 0x101010101 >> 32);
-            return reversed;
-        }
+    public static byte ReverseBits(byte value)
+    {
+        var reversed = (byte)(((((ulong)value * 0x80200802) & 0x884422110) * 0x101010101) >> 32);
+        return reversed;
+    }
 
-        public static byte ShiftLeft(byte value, int bits)
-        {
-            return (byte)(bits > 0 ? value << bits : value >> (-bits));
-        }
+    public static byte ShiftLeft(byte value, int bits) => (byte)(bits > 0 ? value << bits : value >> -bits);
 
-        public static byte ShiftRight(byte value, int bits)
-        {
-            return ShiftLeft(value, -bits);
-        }
+    public static byte ShiftRight(byte value, int bits) => ShiftLeft(value, -bits);
 
-        public static void Swap<T>(ref T left, ref T right)
-        {
-            T temp;
-            temp = right;
-            right = left;
-            left = temp;
-        }
+    public static void Swap<T>(ref T left, ref T right)
+    {
+        T temp;
+        temp = right;
+        right = left;
+        left = temp;
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region License
+
 /*
 CryptSharp
 Copyright (c) 2013 James F. Bellinger <http://www.zer7.com/software/cryptsharp>
@@ -15,54 +16,54 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 #endregion
 
 using System;
 
-namespace CryptSharp.Core.Internal
+namespace CryptSharp.Core.Internal;
+
+internal static class Check
 {
-    internal static class Check
+    public static void Bounds(string valueName, Array value, int offset, int count)
     {
-        public static void Bounds(string valueName, Array value, int offset, int count)
-        {
-            Check.Null(valueName, value);
+        Null(valueName, value);
 
-            if (offset < 0 || count < 0 || count > value.Length - offset)
-            {
-                throw Exceptions.ArgumentOutOfRange(valueName,
-                                                    "Range [{0}, {1}) is outside array bounds [0, {2}).",
-                                                    offset, offset + count, value.Length);
-            }
+        if (offset < 0 || count < 0 || count > value.Length - offset)
+        {
+            throw Exceptions.ArgumentOutOfRange(valueName,
+                "Range [{0}, {1}) is outside array bounds [0, {2}).",
+                offset, offset + count, value.Length);
         }
+    }
 
-        public static void Length(string valueName, Array value, int minimum, int maximum)
+    public static void Length(string valueName, Array value, int minimum, int maximum)
+    {
+        Null(valueName, value);
+
+        if (value.Length < minimum || value.Length > maximum)
         {
-            Check.Null(valueName, value);
-
-            if (value.Length < minimum || value.Length > maximum)
-            {
-                throw Exceptions.ArgumentOutOfRange(valueName,
-                                                    "Length must be in the range [{0}, {1}].",
-                                                    minimum, maximum);
-            }
+            throw Exceptions.ArgumentOutOfRange(valueName,
+                "Length must be in the range [{0}, {1}].",
+                minimum, maximum);
         }
+    }
 
-        public static void Null<T>(string valueName, T value)
+    public static void Null<T>(string valueName, T value)
+    {
+        if (value is null)
         {
-            if (value is null)
-            {
-                throw Exceptions.ArgumentNull(valueName);
-            }
+            throw Exceptions.ArgumentNull(valueName);
         }
+    }
 
-        public static void Range(string valueName, int value, int minimum, int maximum)
+    public static void Range(string valueName, int value, int minimum, int maximum)
+    {
+        if (value < minimum || value > maximum)
         {
-            if (value < minimum || value > maximum)
-            {
-                throw Exceptions.ArgumentOutOfRange(valueName,
-                                                    "Value must be in the range [{0}, {1}].",
-                                                    minimum, maximum);
-            }
+            throw Exceptions.ArgumentOutOfRange(valueName,
+                "Value must be in the range [{0}, {1}].",
+                minimum, maximum);
         }
     }
 }
